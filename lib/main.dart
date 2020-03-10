@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_zjy/common/application.dart';
 import 'package:flutter_zjy/ui/index_widget.dart';
 
+import 'common/router.dart';
+
 void main() async {
   /// 修改问题: Unhandled Exception: ServicesBinding.defaultBinaryMessenger was accessed before the binding was initialized
   /// https://stackoverflow.com/questions/57689492/flutter-unhandled-exception-servicesbinding-defaultbinarymessenger-was-accesse
@@ -41,6 +43,7 @@ class _MyAppState extends State<MyApp> {
       title: "组机营",
       debugShowCheckedModeBanner: false, //去掉debug图标
       theme: new ThemeData(primaryColor: Colors.blue),
+      routes: Router.generateRoute(),
       home: IndexWidget(),
     );
   }
