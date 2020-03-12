@@ -1,12 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_zjy/common/router.dart';
 import 'package:flutter_zjy/data/api/apis.dart';
 import 'package:flutter_zjy/data/model/news_model.dart';
 import 'package:flutter_zjy/common/common.dart';
 import 'package:flutter_zjy/data/api/api_services.dart';
 import 'package:flutter_zjy/generated/json/news_model_helper.dart';
 import 'package:flutter_zjy/widgets/refresh_helper.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 /// 首页
@@ -21,8 +23,7 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   List<NewsDataData> _newsList = new List();
 
-  String _cursor = "";
-  int _count = 0;
+  int _page = 1;
 
   /// listview 控制器
   ScrollController _scrollController = new ScrollController();
@@ -33,8 +34,7 @@ class HomeScreenState extends State<HomeScreen> {
   Future getNewsList() async {
     apiService.getNewsList((NewsModel data) {
       if (data.code == Constants.STATUS_SUCCESS) {
-        _count = data.data.count;
-        _cursor = data.data.cursor;
+        _page = 1;
         _newsList.clear();
         _newsList = data.data.data;
         setState(() {});
@@ -44,16 +44,15 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future getMoreNewsList() async {
+    _page++;
     apiService.getNewsList((NewsModel data) {
       if (data.code == Constants.STATUS_SUCCESS) {
-        _count = data.data.count;
-        _cursor = data.data.cursor;
         setState(() {
           _newsList.addAll(data.data.data);
         });
         _refreshController.loadComplete();
       }
-    }, size: 20, cursor: _cursor);
+    }, size: 20, page: _page);
   }
 
   @override
@@ -64,57 +63,77 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget itemView(BuildContext context, int index) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(16.0, 10.0, 16.0, 10.0),
-      height: 80.0,
-      color: Colors.transparent,
-      child: Flex(
-        direction: Axis.horizontal,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-            child: Image(
-              image: NetworkImage(_newsList[index].img),
-              height: 60.0,
-              width: 80.0,
-            ),
-          ),
-          Expanded(
-              child: Column(
-            children: <Widget>[
-              Expanded(
-                child: Text(
-                  _newsList[index].title,
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 13,
-                  ),
-                ),
+    if (_newsList[index].img == null) {
+      _newsList[index].img = "https://www.zujiying.top/demo.jpg";
+    }
+
+    return InkWell(
+      onTap: () {
+        Fluttertoast.showToast(
+            msg: _newsList[index].html,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,  // 消息框弹出的位置
+            timeInSecForIos: 1,  // 消息框持续的时间（目前的版本只有ios有效）
+            backgroundColor: Colors.black45,
+            textColor: Colors.white,
+            fontSize: 13.0
+        );
+
+        Navigator.pushNamed(context, RouterName.web_view,arguments: _newsList[index].html);
+
+      },
+      child: Container(
+        padding: EdgeInsets.fromLTRB(16.0, 10.0, 16.0, 10.0),
+        height: 80.0,
+        color: Colors.transparent,
+        child: Flex(
+          direction: Axis.horizontal,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+              child: Image(
+                image: NetworkImage(_newsList[index].img),
+                height: 60.0,
+                width: 80.0,
               ),
-              Flex(
-                direction: Axis.horizontal,
-                children: <Widget>[
-                  Spacer(
-                    flex: 1,
-                  ),
-                  Text(
-                    _newsList[index].pubDate,
+            ),
+            Expanded(
+                child: Column(
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    _newsList[index].title,
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 3,
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 13,
                     ),
                   ),
-                ],
-              ),
-            ],
-          )),
-        ],
+                ),
+                Flex(
+                  direction: Axis.horizontal,
+                  children: <Widget>[
+                    Spacer(
+                      flex: 1,
+                    ),
+                    Text(
+                      _newsList[index].pubDate,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontSize: 10,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            )),
+          ],
+        ),
       ),
     );
   }

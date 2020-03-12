@@ -9,10 +9,10 @@ ApiService get apiService => _apiService;
 
 class ApiService {
   // 首页获取新闻资讯
-  void getNewsList(Function callback, {int size, String cursor}) async {
+  void getNewsList(Function callback, {int size, page}) async {
     dio.get(Apis.NEWS_LIST, queryParameters: {
       "page_size": size,
-      "cursor": cursor
+      "current": page
     }).then((response) {
       callback(newsModelFromJson(new NewsModel(), response.data));
     });
