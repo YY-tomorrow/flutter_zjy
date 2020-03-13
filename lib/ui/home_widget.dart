@@ -25,7 +25,7 @@ class HomeScreenState extends State<HomeScreen> {
   ScrollController _scrollController = new ScrollController();
 
   RefreshController _refreshController =
-      new RefreshController(initialRefresh: false);
+      new RefreshController(initialRefresh: true);
 
   Future getNewsList() async {
     _page = 1;
@@ -50,13 +50,6 @@ class HomeScreenState extends State<HomeScreen> {
         });
       }
     }, size: 10, page: _page);
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getNewsList();
   }
 
   @override

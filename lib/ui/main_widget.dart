@@ -11,9 +11,7 @@ class MainWidget extends StatefulWidget {
   State<StatefulWidget> createState() => _MainWidgetState();
 }
 
-class _MainWidgetState extends State<MainWidget>
-    with AutomaticKeepAliveClientMixin {
-  PageController _pageController = PageController();
+class _MainWidgetState extends State<MainWidget> {
   int _selectedIndex = 0; // 当前选中的索引
 
   /// tabs的名字
@@ -27,26 +25,14 @@ class _MainWidgetState extends State<MainWidget>
   ];
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     // TODO: implement build
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        body: PageView.builder(
-          itemBuilder: (context, index) => pages[index],
-          itemCount: pages.length,
-          controller: _pageController,
-          physics: NeverScrollableScrollPhysics(),
-          onPageChanged: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: pages,
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
@@ -63,7 +49,9 @@ class _MainWidgetState extends State<MainWidget>
                 icon: Icon(Icons.account_box), title: Text(bottomBarTitles[3]))
           ],
           onTap: (int index) {
-            _pageController.jumpToPage(index);
+            setState(() {
+              _selectedIndex = index;
+            });
           },
         ),
       ),
