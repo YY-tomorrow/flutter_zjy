@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_zjy/common/router.dart';
 
 class MyWidget extends StatefulWidget {
   @override
@@ -41,12 +42,30 @@ class MyWidgetState extends State<MyWidget> {
           ),
         ),
         Expanded(
-          child: ListView(
-            children: <Widget>[
-              ListTile(
-                title: Text("关于"),
-              )
-            ],
+          child: ListView.separated(
+            itemCount: 1,
+            separatorBuilder: (BuildContext context, int index) {
+              return Divider(color: Colors.blue);
+            },
+            itemBuilder: (BuildContext context, int index) {
+              return InkWell(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    RouterName.about,
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 5.0),
+                  child: Text(
+                    "关于",
+                    style: TextStyle(
+                      fontSize: 14.0,
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         )
       ],

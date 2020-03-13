@@ -1,14 +1,10 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zjy/common/router.dart';
-import 'package:flutter_zjy/data/api/apis.dart';
 import 'package:flutter_zjy/data/model/news_model.dart';
 import 'package:flutter_zjy/common/common.dart';
 import 'package:flutter_zjy/data/api/api_services.dart';
-import 'package:flutter_zjy/generated/json/news_model_helper.dart';
 import 'package:flutter_zjy/widgets/refresh_helper.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 /// 首页
@@ -32,13 +28,14 @@ class HomeScreenState extends State<HomeScreen> {
       new RefreshController(initialRefresh: false);
 
   Future getNewsList() async {
+    _page = 1;
     apiService.getNewsList((NewsModel data) {
       if (data.code == Constants.STATUS_SUCCESS) {
-        _page = 1;
         _newsList.clear();
-        _newsList = data.data.data;
-        setState(() {});
-        _refreshController.loadComplete();
+        _refreshController.refreshCompleted(resetFooterState: true);
+        setState(() {
+          _newsList.addAll(data.data.data);
+        });
       }
     });
   }
@@ -47,12 +44,12 @@ class HomeScreenState extends State<HomeScreen> {
     _page++;
     apiService.getNewsList((NewsModel data) {
       if (data.code == Constants.STATUS_SUCCESS) {
+        _refreshController.loadComplete();
         setState(() {
           _newsList.addAll(data.data.data);
         });
-        _refreshController.loadComplete();
       }
-    }, size: 20, page: _page);
+    }, size: 10, page: _page);
   }
 
   @override
@@ -62,6 +59,11 @@ class HomeScreenState extends State<HomeScreen> {
     getNewsList();
   }
 
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
   Widget itemView(BuildContext context, int index) {
     if (_newsList[index].img == null) {
       _newsList[index].img = "https://www.zujiying.top/demo.jpg";
@@ -69,22 +71,13 @@ class HomeScreenState extends State<HomeScreen> {
 
     return InkWell(
       onTap: () {
-        Fluttertoast.showToast(
-            msg: _newsList[index].html,
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,  // 消息框弹出的位置
-            timeInSecForIos: 1,  // 消息框持续的时间（目前的版本只有ios有效）
-            backgroundColor: Colors.black45,
-            textColor: Colors.white,
-            fontSize: 13.0
-        );
-
-        Navigator.pushNamed(context, RouterName.web_view,arguments: _newsList[index].html);
-
+        Navigator.pushNamed(context, RouterName.web_view,
+            arguments: _newsList[index].html);
       },
       child: Container(
         padding: EdgeInsets.fromLTRB(16.0, 10.0, 16.0, 10.0),
         height: 80.0,
+        alignment: Alignment.centerLeft,
         color: Colors.transparent,
         child: Flex(
           direction: Axis.horizontal,
@@ -105,7 +98,7 @@ class HomeScreenState extends State<HomeScreen> {
                     _newsList[index].title,
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
-                    maxLines: 3,
+                    maxLines: 2,
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 13,

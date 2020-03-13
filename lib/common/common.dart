@@ -1,5 +1,6 @@
 class Constants {
   static const int STATUS_SUCCESS = 1;
+  static const bool isDebug = true;
 
   static const String USERNAME_KEY = 'username_key';
   static const String COOKIES_KEY = 'cookies_key';

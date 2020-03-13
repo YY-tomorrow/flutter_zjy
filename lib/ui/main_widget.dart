@@ -31,6 +31,8 @@ class _MainWidgetState extends State<MainWidget>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     // TODO: implement build
     return WillPopScope(
       onWillPop: _onWillPop,

@@ -1,43 +1,58 @@
 import 'dart:io';
 
-import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_zjy/data/api/apis.dart';
-import 'package:path_provider/path_provider.dart';
 
-Dio _dio = Dio(); /// 使用默认配置
+import 'log_interceptor.dart';
+
+Dio _dio = DioManager.getInstance()._dio;
 
 Dio get dio => _dio;
 
 /// dio 配置
 class DioManager {
-  static Future init() async {
-    dio.options.baseUrl = Apis.BASE_HOST;
-    dio.options.connectTimeout = 30 * 1000;
-    dio.options.sendTimeout = 30 * 1000;
-    dio.options.receiveTimeout = 30 * 1000;
-    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (client) {
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) {
-        return true;
-      };
-    };
+  static DioManager _instance = DioManager._internal();
+  Dio _dio;
 
-    // TODO 网络环境监听
-//    dio.interceptors.add(LogInterceptors());
-//    dio.interceptors.add(WanAndroidErrorInterceptor());
-    // dio.interceptors.add(CookieInterceptor2());
+  factory DioManager() => _instance;
 
-    Directory tempDir = await getTemporaryDirectory();
-    String tempPath = tempDir.path + "/dioCookie";
-    print('DioUtil : http cookie path = $tempPath');
-    CookieJar cj = PersistCookieJar(dir: tempPath, ignoreExpires: true);
-//    dio.interceptors.add(CookieInterceptor(cj));
+  ///通用全局单例，第一次使用时初始化
+  DioManager._internal({String baseUrl}) {
+    if (null == _dio) {
+      _dio = new Dio(
+          new BaseOptions(baseUrl: Apis.BASE_API, connectTimeout: 10000));
+      _dio.interceptors.add(new LogsInterceptors());
+    }
   }
 
-  static String handleError(error, {String defaultErrorStr = '未知错误~'}) { // 定义一个命名参数的方法
+  static DioManager getInstance({String baseUrl}) {
+    if (baseUrl == null) {
+      return _instance._normal();
+    } else {
+      return _instance._baseUrl(baseUrl);
+    }
+  }
+
+  //用于指定特定域名，比如cdn和kline首次的http请求
+  DioManager _baseUrl(String baseUrl) {
+    if (_dio != null) {
+      _dio.options.baseUrl = baseUrl;
+    }
+    return this;
+  }
+
+  //一般请求，默认域名
+  DioManager _normal() {
+    if (_dio != null) {
+      if (_dio.options.baseUrl != Apis.BASE_API) {
+        _dio.options.baseUrl = Apis.BASE_API;
+      }
+    }
+    return this;
+  }
+
+  static String handleError(error, {String defaultErrorStr = '未知错误~'}) {
+    // 定义一个命名参数的方法
     String errStr;
     if (error is DioError) {
       if (error.type == DioErrorType.CONNECT_TIMEOUT) {
