@@ -5,4 +5,7 @@ class Apis {
 
   static const String NEWS_LIST = "/news/list";
   static const String PLANS_LIST = "/spider/plans";
+
+  static const String LOGIN = "/user/login";
+  static const String USER_INFO = "/user/info";
 }

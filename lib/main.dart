@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_zjy/common/application.dart';
 import 'package:flutter_zjy/ui/index_widget.dart';
+import 'package:flutter_zjy/utils/sp_util.dart';
 
 import 'common/router.dart';
 
@@ -12,6 +13,8 @@ void main() async {
   /// 修改问题: Unhandled Exception: ServicesBinding.defaultBinaryMessenger was accessed before the binding was initialized
   /// https://stackoverflow.com/questions/57689492/flutter-unhandled-exception-servicesbinding-defaultbinarymessenger-was-accesse
   WidgetsFlutterBinding.ensureInitialized();
+
+  await SPUtil.getInstance();
 
   runApp(MyApp());
 

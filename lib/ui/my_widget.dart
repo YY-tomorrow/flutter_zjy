@@ -1,6 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_zjy/common/application.dart';
 import 'package:flutter_zjy/common/router.dart';
+import 'package:flutter_zjy/common/common.dart';
+import 'package:flutter_zjy/data/api/api_services.dart';
+import 'package:flutter_zjy/event/refresh_user_event.dart';
+import 'package:flutter_zjy/utils/sp_util.dart';
+import 'package:flutter_zjy/data/model/userinfo_model.dart';
 
 class MyWidget extends StatefulWidget {
   @override
@@ -11,6 +18,46 @@ class MyWidget extends StatefulWidget {
 }
 
 class MyWidgetState extends State<MyWidget> {
+  var _userName = "请登录";
+  var _userID = "";
+  var _userImg = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (SPUtil.getBool(Constants.LOGIN_KEY)) {
+      _getUserInfo();
+    }
+  }
+
+  Future _userInfo() async {
+    if (SPUtil.getBool(Constants.LOGIN_KEY)) {
+      Navigator.pushNamed(context, RouterName.user_info);
+    } else {
+      Navigator.pushNamed(context, RouterName.login);
+    }
+  }
+
+  Future _getUserInfo() async {
+    apiService.getUserInfo((UserinfoModel data) {
+      if (data.code == Constants.STATUS_SUCCESS) {
+        SPUtil.putString(Constants.USERNAME_KEY, data.data.userName);
+        SPUtil.putInt(Constants.ID_KEY, data.data.id);
+        _userName = SPUtil.getString(Constants.USERNAME_KEY, defValue: "请登录");
+        _userID = SPUtil.getInt(Constants.ID_KEY).toString();
+        _userImg = data.data.image;
+      }
+    });
+  }
+
+  void registerLoginEvent() {
+    Application.eventBus.on<RefreshUserEvent>().listen((event) {
+      _getUserInfo();
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -24,9 +71,9 @@ class MyWidgetState extends State<MyWidget> {
               //背景装饰
               gradient: RadialGradient(
                   //背景径向渐变
-                  colors: [Colors.red, Colors.orange],
+                  colors: [Colors.blue, Colors.lightBlue],
                   center: Alignment.topLeft,
-                  radius: .98),
+                  radius: .9),
               boxShadow: [
                 //卡片阴影
                 BoxShadow(
@@ -36,9 +83,55 @@ class MyWidgetState extends State<MyWidget> {
               ]),
           alignment: Alignment.center,
           //卡片内文字居中
-          child: Text(
-            //卡片文字
-            "5.20", style: TextStyle(color: Colors.white, fontSize: 40.0),
+          child: Container(
+            margin: EdgeInsets.all(16.0),
+            constraints: BoxConstraints.tightFor(height: 70.0),
+            child: Flex(
+              direction: Axis.horizontal,
+              children: <Widget>[
+                InkWell(
+                  onTap: () => _userInfo(),
+                  child: ClipOval(
+                    child: Image(
+                      image: NetworkImage(_userImg),
+                      height: 70.0,
+                      width: 70.0,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Flex(
+                        direction: Axis.vertical,
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: Align(
+                              child: Row(
+                                children: <Widget>[
+                                  Text(
+                                    _userName,
+                                    style: TextStyle(
+                                        fontSize: 18.0,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Text("id : " + _userID),
+                            ],
+                          ),
+                        ],
+                      )),
+                ),
+              ],
+            ),
           ),
         ),
         Expanded(

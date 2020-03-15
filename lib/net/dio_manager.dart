@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_zjy/data/api/apis.dart';
+import 'package:flutter_zjy/common/common.dart';
+import 'package:flutter_zjy/utils/sp_util.dart';
 
 import 'log_interceptor.dart';
 
@@ -19,8 +21,10 @@ class DioManager {
   ///通用全局单例，第一次使用时初始化
   DioManager._internal({String baseUrl}) {
     if (null == _dio) {
-      _dio = new Dio(
-          new BaseOptions(baseUrl: Apis.BASE_API, connectTimeout: 10000));
+      _dio = new Dio(new BaseOptions(
+          baseUrl: Apis.BASE_API,
+          connectTimeout: 10000,
+          headers: {"Authorization": SPUtil.getString(Constants.TOKEN_KEY)}));
       _dio.interceptors.add(new LogsInterceptors());
     }
   }
