@@ -3,6 +3,7 @@ import 'package:flutter_zjy/common/application.dart';
 import 'package:flutter_zjy/common/common.dart';
 import 'package:flutter_zjy/data/api/api_services.dart';
 import 'package:flutter_zjy/data/model/token_model.dart';
+import 'package:flutter_zjy/event/login_event.dart';
 import 'package:flutter_zjy/event/refresh_user_event.dart';
 import 'package:flutter_zjy/utils/sp_util.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -38,7 +39,7 @@ class LoginWidgetState extends State<LoginWidget> {
       if (data.code == Constants.STATUS_SUCCESS) {
         SPUtil.putBool(Constants.LOGIN_KEY, true);
         SPUtil.putString(Constants.TOKEN_KEY, data.data.token);
-        Application.eventBus.fire(new RefreshUserEvent());
+        Application.eventBus.fire(new LoginEvent());
         Navigator.of(context).pop();
       } else {
         Fluttertoast.showToast(

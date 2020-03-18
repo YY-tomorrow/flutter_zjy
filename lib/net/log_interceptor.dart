@@ -1,6 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zjy/common/common.dart';
+import 'package:flutter_zjy/generated/json/token_model_helper.dart';
+import 'package:flutter_zjy/data/model/token_model.dart';
+import 'package:flutter_zjy/net/dio_manager.dart';
+import 'package:flutter_zjy/utils/sp_util.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class LogsInterceptors extends InterceptorsWrapper {
@@ -59,6 +63,27 @@ class LogsInterceptors extends InterceptorsWrapper {
       printKV('error', err.toString());
       printKV('error message', (err.response?.toString() ?? ''));
       print('└—————————————————————End Dio Error———————————————————————\n\n');
+    }
+
+    var data = new TokenModel();
+    data = tokenModelFromJson(data, err.response.data);
+    print(data);
+    if (data.code == 301) {
+      SPUtil.putString(Constants.TOKEN_KEY, data.data.token);
+      //重新发起一个请求获取数据
+      var request = err.response.request;
+      request.headers["Authorization"] = SPUtil.getString(Constants.TOKEN_KEY);
+      try {
+        var response = await dio.request(request.path,
+            data: request.data,
+            queryParameters: request.queryParameters,
+            cancelToken: request.cancelToken,
+            options: request,
+            onReceiveProgress: request.onReceiveProgress);
+        return response;
+      } on DioError catch (e) {
+        return e;
+      }
     }
 
     Fluttertoast.showToast(

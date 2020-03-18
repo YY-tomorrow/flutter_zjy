@@ -5,6 +5,7 @@ import 'package:flutter_zjy/common/application.dart';
 import 'package:flutter_zjy/common/router.dart';
 import 'package:flutter_zjy/common/common.dart';
 import 'package:flutter_zjy/data/api/api_services.dart';
+import 'package:flutter_zjy/event/login_event.dart';
 import 'package:flutter_zjy/event/refresh_user_event.dart';
 import 'package:flutter_zjy/utils/sp_util.dart';
 import 'package:flutter_zjy/data/model/userinfo_model.dart';
@@ -26,8 +27,11 @@ class MyWidgetState extends State<MyWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    registerLoginEvent();
+    registerRefreshEvent();
     if (SPUtil.getBool(Constants.LOGIN_KEY)) {
-      _getUserInfo();
+      _userName = SPUtil.getString(Constants.USERNAME_KEY, defValue: "请登录");
+      _userID = SPUtil.getInt(Constants.ID_KEY).toString();
     }
   }
 
@@ -52,8 +56,16 @@ class MyWidgetState extends State<MyWidget> {
   }
 
   void registerLoginEvent() {
-    Application.eventBus.on<RefreshUserEvent>().listen((event) {
+    Application.eventBus.on<LoginEvent>().listen((event) {
       _getUserInfo();
+      setState(() {});
+    });
+  }
+
+  void registerRefreshEvent() {
+    Application.eventBus.on<RefreshUserEvent>().listen((event) {
+      _userName = SPUtil.getString(Constants.USERNAME_KEY);
+      _userID = SPUtil.getInt(Constants.ID_KEY).toString();
       setState(() {});
     });
   }

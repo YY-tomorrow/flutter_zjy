@@ -4,6 +4,8 @@ class Constants {
 
   static const String TOKEN_KEY = 'token_key';
 
+  static const String PHONE_KEY = 'phone_key';
+  static const String USER_IMAGE_KEY = 'user_image_key';
   static const String USERNAME_KEY = 'username_key';
   static const String ID_KEY = 'id_key';
   static const String LOGIN_KEY = 'login_key';

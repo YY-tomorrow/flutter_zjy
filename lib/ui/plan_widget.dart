@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zjy/common/common.dart';
+import 'package:flutter_zjy/common/router.dart';
 import 'package:flutter_zjy/data/api/api_services.dart';
 import 'package:flutter_zjy/data/model/spider_plans_model.dart';
 import 'package:flutter_zjy/widgets/refresh_helper.dart';
@@ -126,6 +127,10 @@ class PlanWidgetState extends State<PlanWidget> {
           controller: _scrollController,
           itemCount: _plansList.length,
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.pushNamed(context, RouterName.make_plan),
+        child: Icon(Icons.add),
       ),
     );
   }

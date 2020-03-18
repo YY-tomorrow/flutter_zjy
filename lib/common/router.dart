@@ -14,6 +14,7 @@ class RouterName {
   static const String web_view = 'web_view';
   static const String about = 'about';
   static const String user_info = 'user_info';
+  static const String make_plan = 'make_plan';
 }
 
 class Router {
@@ -24,6 +25,7 @@ class Router {
       RouterName.about: (context) => new AboutWidget(),
       RouterName.login: (context) => new LoginWidget(),
       RouterName.user_info: (context) => new UserInfoWidget(),
+      RouterName.make_plan: (context) => new UserInfoWidget(),
     };
     return routes;
   }
