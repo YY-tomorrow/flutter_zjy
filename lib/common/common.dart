@@ -20,4 +20,5 @@ class Constants {
 
 class AppBarName {
   static const String user_info = "个人信息";
+  static const String about_us = "关于";
 }

@@ -31,7 +31,11 @@ class MyWidgetState extends State<MyWidget> {
     registerRefreshEvent();
     if (SPUtil.getBool(Constants.LOGIN_KEY)) {
       _userName = SPUtil.getString(Constants.USERNAME_KEY, defValue: "请登录");
-      _userID = SPUtil.getInt(Constants.ID_KEY).toString();
+      if (SPUtil.getInt(Constants.ID_KEY) > 0) {
+        _userID = SPUtil.getInt(Constants.ID_KEY).toString();
+      }
+      _userImg = SPUtil.getString(Constants.USER_IMAGE_KEY,
+          defValue: "https://www.zujiying.top/demo.jpg");
     }
   }
 
@@ -49,7 +53,9 @@ class MyWidgetState extends State<MyWidget> {
         SPUtil.putString(Constants.USERNAME_KEY, data.data.userName);
         SPUtil.putInt(Constants.ID_KEY, data.data.id);
         _userName = SPUtil.getString(Constants.USERNAME_KEY, defValue: "请登录");
-        _userID = SPUtil.getInt(Constants.ID_KEY).toString();
+        if (SPUtil.getInt(Constants.ID_KEY) > 0) {
+          _userID = SPUtil.getInt(Constants.ID_KEY).toString();
+        }
         _userImg = data.data.image;
       }
     });
@@ -66,7 +72,8 @@ class MyWidgetState extends State<MyWidget> {
     Application.eventBus.on<RefreshUserEvent>().listen((event) {
       _userName = SPUtil.getString(Constants.USERNAME_KEY);
       _userID = SPUtil.getInt(Constants.ID_KEY).toString();
-      setState(() {});
+      _userImg = SPUtil.getString(Constants.USER_IMAGE_KEY);
+      Application.eventBus.fire(new RefreshUserEvent());
     });
   }
 
@@ -147,30 +154,61 @@ class MyWidgetState extends State<MyWidget> {
           ),
         ),
         Expanded(
-          child: ListView.separated(
-            itemCount: 1,
-            separatorBuilder: (BuildContext context, int index) {
-              return Divider(color: Colors.blue);
-            },
-            itemBuilder: (BuildContext context, int index) {
-              return InkWell(
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    RouterName.about,
-                  );
-                },
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 5.0),
+          child: Flex(
+            direction: Axis.vertical,
+            children: <Widget>[
+              Expanded(
+                flex: 1,
+                child: ListView.separated(
+                  itemCount: 1,
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider(color: Colors.blue);
+                  },
+                  itemBuilder: (BuildContext context, int index) {
+                    return InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          RouterName.about,
+                        );
+                      },
+                      child: Container(
+                        color: Colors.white12,
+                        padding: EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 5.0),
+                        child: Text(
+                          "关于",
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                height: 45,
+                margin:
+                    EdgeInsets.only(top: 0, left: 10, right: 10, bottom: 10),
+                child: RaisedButton(
+                  onPressed: () {
+                    SPUtil.putString(Constants.USERNAME_KEY, "请登录");
+                    SPUtil.putInt(Constants.ID_KEY, 0);
+                    SPUtil.putString(Constants.USER_IMAGE_KEY,
+                        "https://www.zujiying.top/demo.jpg");
+                    SPUtil.putBool(Constants.LOGIN_KEY, false);
+                    setState(() {});
+                  },
+                  shape: StadiumBorder(side: BorderSide.none),
+                  color: Colors.redAccent,
                   child: Text(
-                    "关于",
-                    style: TextStyle(
-                      fontSize: 14.0,
-                    ),
+                    '退出登录',
+                    style: TextStyle(color: Colors.white, fontSize: 15),
                   ),
                 ),
-              );
-            },
+              ),
+            ],
           ),
         )
       ],
