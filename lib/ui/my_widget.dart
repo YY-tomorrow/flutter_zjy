@@ -57,6 +57,7 @@ class MyWidgetState extends State<MyWidget> {
           _userID = SPUtil.getInt(Constants.ID_KEY).toString();
         }
         _userImg = data.data.image;
+        setState(() {});
       }
     });
   }
@@ -64,7 +65,6 @@ class MyWidgetState extends State<MyWidget> {
   void registerLoginEvent() {
     Application.eventBus.on<LoginEvent>().listen((event) {
       _getUserInfo();
-      setState(() {});
     });
   }
 
@@ -73,7 +73,7 @@ class MyWidgetState extends State<MyWidget> {
       _userName = SPUtil.getString(Constants.USERNAME_KEY);
       _userID = SPUtil.getInt(Constants.ID_KEY).toString();
       _userImg = SPUtil.getString(Constants.USER_IMAGE_KEY);
-      Application.eventBus.fire(new RefreshUserEvent());
+      setState(() {});
     });
   }
 
@@ -198,6 +198,9 @@ class MyWidgetState extends State<MyWidget> {
                     SPUtil.putString(Constants.USER_IMAGE_KEY,
                         "https://www.zujiying.top/demo.jpg");
                     SPUtil.putBool(Constants.LOGIN_KEY, false);
+                    _userName = SPUtil.getString(Constants.USERNAME_KEY);
+                    _userID = SPUtil.getInt(Constants.ID_KEY).toString();
+                    _userImg = SPUtil.getString(Constants.USER_IMAGE_KEY);
                     setState(() {});
                   },
                   shape: StadiumBorder(side: BorderSide.none),

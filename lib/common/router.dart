@@ -3,6 +3,7 @@ import 'package:flutter_zjy/ui/about_widget.dart';
 import 'package:flutter_zjy/ui/home_widget.dart';
 import 'package:flutter_zjy/ui/login_widget.dart';
 import 'package:flutter_zjy/ui/main_widget.dart';
+import 'package:flutter_zjy/ui/make_plan_widget.dart';
 import 'package:flutter_zjy/ui/userinfo_widget.dart';
 import 'package:flutter_zjy/ui/webview_widget.dart';
 
@@ -25,7 +26,7 @@ class Router {
       RouterName.about: (context) => new AboutWidget(),
       RouterName.login: (context) => new LoginWidget(),
       RouterName.user_info: (context) => new UserInfoWidget(),
-      RouterName.make_plan: (context) => new UserInfoWidget(),
+      RouterName.make_plan: (context) => new MakePlanWidget(),
     };
     return routes;
   }

@@ -7,6 +7,8 @@ import 'package:flutter_zjy/data/model/news_model.dart';
 import 'package:flutter_zjy/generated/json/news_model_helper.dart';
 import 'package:flutter_zjy/data/model/token_model.dart';
 import 'package:flutter_zjy/generated/json/token_model_helper.dart';
+import 'package:flutter_zjy/data/model/empty_response_model.dart';
+import 'package:flutter_zjy/generated/json/empty_response_model_helper.dart';
 import 'package:flutter_zjy/data/model/spider_plans_model.dart';
 import 'package:flutter_zjy/generated/json/spider_plans_model_helper.dart';
 import 'package:flutter_zjy/data/model/refreshtoken_model.dart';
@@ -25,7 +27,8 @@ class JsonConvert<T> {
 			return newsDataFromJson(data as NewsData, json) as T;			case NewsDataData:
 			return newsDataDataFromJson(data as NewsDataData, json) as T;			case TokenModel:
 			return tokenModelFromJson(data as TokenModel, json) as T;			case TokenData:
-			return tokenDataFromJson(data as TokenData, json) as T;			case SpiderPlansModel:
+			return tokenDataFromJson(data as TokenData, json) as T;			case EmptyResponseModel:
+			return emptyResponseModelFromJson(data as EmptyResponseModel, json) as T;			case SpiderPlansModel:
 			return spiderPlansModelFromJson(data as SpiderPlansModel, json) as T;			case SpiderPlansData:
 			return spiderPlansDataFromJson(data as SpiderPlansData, json) as T;			case SpiderPlansDataPlan:
 			return spiderPlansDataPlanFromJson(data as SpiderPlansDataPlan, json) as T;			case SpiderPlansDataPlansElemants:
@@ -40,7 +43,8 @@ class JsonConvert<T> {
 			return newsDataToJson(data as NewsData);			case NewsDataData:
 			return newsDataDataToJson(data as NewsDataData);			case TokenModel:
 			return tokenModelToJson(data as TokenModel);			case TokenData:
-			return tokenDataToJson(data as TokenData);			case SpiderPlansModel:
+			return tokenDataToJson(data as TokenData);			case EmptyResponseModel:
+			return emptyResponseModelToJson(data as EmptyResponseModel);			case SpiderPlansModel:
 			return spiderPlansModelToJson(data as SpiderPlansModel);			case SpiderPlansData:
 			return spiderPlansDataToJson(data as SpiderPlansData);			case SpiderPlansDataPlan:
 			return spiderPlansDataPlanToJson(data as SpiderPlansDataPlan);			case SpiderPlansDataPlansElemants:
@@ -55,7 +59,8 @@ class JsonConvert<T> {
 			return NewsData().fromJson(json) as T;			case 'NewsDataData':
 			return NewsDataData().fromJson(json) as T;			case 'TokenModel':
 			return TokenModel().fromJson(json) as T;			case 'TokenData':
-			return TokenData().fromJson(json) as T;			case 'SpiderPlansModel':
+			return TokenData().fromJson(json) as T;			case 'EmptyResponseModel':
+			return EmptyResponseModel().fromJson(json) as T;			case 'SpiderPlansModel':
 			return SpiderPlansModel().fromJson(json) as T;			case 'SpiderPlansData':
 			return SpiderPlansData().fromJson(json) as T;			case 'SpiderPlansDataPlan':
 			return SpiderPlansDataPlan().fromJson(json) as T;			case 'SpiderPlansDataPlansElemants':

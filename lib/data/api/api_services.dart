@@ -1,8 +1,10 @@
 import 'package:flutter_zjy/data/api/apis.dart';
+import 'package:flutter_zjy/generated/json/empty_response_model_helper.dart';
 import 'package:flutter_zjy/generated/json/news_model_helper.dart';
 import 'package:flutter_zjy/data/model/news_model.dart';
 import 'package:flutter_zjy/data/model/token_model.dart';
 import 'package:flutter_zjy/data/model/spider_plans_model.dart';
+import 'package:flutter_zjy/data/model/empty_response_model.dart';
 import 'package:flutter_zjy/generated/json/spider_plans_model_helper.dart';
 import 'package:flutter_zjy/generated/json/token_model_helper.dart';
 import 'package:flutter_zjy/generated/json/userinfo_model_helper.dart';
@@ -41,10 +43,19 @@ class ApiService {
     });
   }
 
-  // 爬虫获取方案列表
+  // 获取用户信息
   void getUserInfo(Function callback) async {
     dio.get(Apis.USER_INFO).then((response) {
       callback(userinfoModelFromJson(new UserinfoModel(), response.data));
+    });
+  }
+
+  // 发送验证码
+  void getCode(Function callback, String phone) async {
+    dio.post(Apis.SEND_CODE, data: {
+      "phone": phone,
+    }).then((response) {
+      callback(emptyResponseModelFromJson(new EmptyResponseModel(), response.data));
     });
   }
 }
