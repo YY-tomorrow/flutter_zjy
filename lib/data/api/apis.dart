@@ -10,4 +10,5 @@ class Apis {
   static const String USER_INFO = "/user/info";
   static const String GOODS_LIST = "/goods/list";
   static const String SEND_CODE = "/user/code";
+  static const String PRODUCT_LIST = "/goods/list";
 }

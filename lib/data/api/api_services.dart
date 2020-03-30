@@ -5,6 +5,8 @@ import 'package:flutter_zjy/data/model/news_model.dart';
 import 'package:flutter_zjy/data/model/token_model.dart';
 import 'package:flutter_zjy/data/model/spider_plans_model.dart';
 import 'package:flutter_zjy/data/model/empty_response_model.dart';
+import 'package:flutter_zjy/data/model/products_model.dart';
+import 'package:flutter_zjy/generated/json/products_model_helper.dart';
 import 'package:flutter_zjy/generated/json/spider_plans_model_helper.dart';
 import 'package:flutter_zjy/generated/json/token_model_helper.dart';
 import 'package:flutter_zjy/generated/json/userinfo_model_helper.dart';
@@ -55,7 +57,25 @@ class ApiService {
     dio.post(Apis.SEND_CODE, data: {
       "phone": phone,
     }).then((response) {
-      callback(emptyResponseModelFromJson(new EmptyResponseModel(), response.data));
+      callback(
+          emptyResponseModelFromJson(new EmptyResponseModel(), response.data));
+    });
+  }
+
+  // 发送验证码
+  void getProductList(Function callback,
+      {int size, page, fromPrice, toPrice, zy, String key, sort}) async {
+    dio.get(Apis.PRODUCT_LIST, queryParameters: {
+      "page_size": size,
+      "current": page,
+      "form_price": fromPrice,
+      "to_price": toPrice,
+      "is_zy": zy,
+      "key": key,
+      "sort": sort
+    }).then((response) {
+      callback(
+          productsModelFromJson(new ProductsModel(), response.data));
     });
   }
 }
