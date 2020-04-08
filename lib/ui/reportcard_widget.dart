@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/src/material/app_bar.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_zjy/ui/base_widget.dart';
 
 class ReportCardWidget extends StatefulWidget {
   @override

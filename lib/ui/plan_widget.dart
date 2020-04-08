@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_zjy/common/common.dart';
 import 'package:flutter_zjy/common/router.dart';
 import 'package:flutter_zjy/data/api/api_services.dart';
-import 'package:flutter_zjy/data/model/spider_plans_model.dart';
+import 'package:flutter_zjy/data/model/our_plans_model.dart';
 import 'package:flutter_zjy/widgets/refresh_helper.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -16,7 +16,7 @@ class PlanWidget extends StatefulWidget {
 }
 
 class PlanWidgetState extends State<PlanWidget> {
-  List<SpiderPlansDataPlan> _plansList = new List();
+  List<OurPlansDataPlan> _plansList = new List();
   var _page = 1;
 
   /// listview 控制器
@@ -27,12 +27,12 @@ class PlanWidgetState extends State<PlanWidget> {
 
   Future getPlansList() async {
     _page = 1;
-    apiService.getPlansList((SpiderPlansModel data) {
+    apiService.getOurProductList((OurPlansModel data) {
       if (data.code == Constants.STATUS_SUCCESS) {
         _plansList.clear();
-        _refreshController.refreshCompleted(resetFooterState: true);
         setState(() {
           _plansList.addAll(data.data.plans);
+          _refreshController.refreshCompleted(resetFooterState: true);
         });
       }
     }, page: _page);
@@ -40,11 +40,11 @@ class PlanWidgetState extends State<PlanWidget> {
 
   Future getMorePlansList() async {
     _page++;
-    apiService.getPlansList((SpiderPlansModel data) {
+    apiService.getOurProductList((OurPlansModel data) {
       if (data.code == Constants.STATUS_SUCCESS) {
-        _refreshController.loadComplete();
         setState(() {
           _plansList.addAll(data.data.plans);
+          _refreshController.loadComplete();
         });
       }
     }, page: _page);
@@ -70,7 +70,7 @@ class PlanWidgetState extends State<PlanWidget> {
                   flex: 1,
                 ),
                 Text(
-                  _plansList[index].price,
+                  _plansList[index].price.toString(),
                   style: TextStyle(fontSize: 12.0, color: Colors.deepOrange),
                 ),
               ],
@@ -81,11 +81,11 @@ class PlanWidgetState extends State<PlanWidget> {
             child: ListView.builder(
                 padding: EdgeInsets.all(5.0),
                 scrollDirection: Axis.horizontal,
-                itemCount: _plansList[index].elements.length,
+                itemCount: _plansList[index].items.length,
                 itemExtent: 100.0,
                 itemBuilder: (BuildContext context, int i) {
-                  String url = _plansList[index].elements[i].image != null
-                      ? _plansList[index].elements[i].image
+                  String url = _plansList[index].items[i].skuImg != null
+                      ? _plansList[index].items[i].skuImg
                       : "https://www.zujiying.top/demo.jpg";
                   return Image(
                     image: NetworkImage(url),
@@ -99,11 +99,13 @@ class PlanWidgetState extends State<PlanWidget> {
                 flex: 1,
               ),
               Text(
-                _plansList[index].time,
+                DateTime.fromMillisecondsSinceEpoch(_plansList[index].time)
+                    .toString(),
                 style: TextStyle(fontSize: 10.0),
               ),
             ],
           ),
+          Divider(height: 1)
         ],
       ),
     );
@@ -113,19 +115,22 @@ class PlanWidgetState extends State<PlanWidget> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        header: MaterialClassicHeader(),
-        footer: RefreshFooter(),
-        controller: _refreshController,
-        onRefresh: getPlansList,
-        onLoading: getMorePlansList,
-        child: ListView.builder(
-          itemBuilder: itemView,
-          physics: new AlwaysScrollableScrollPhysics(),
-          controller: _scrollController,
-          itemCount: _plansList.length,
+      body: Container(
+        padding: EdgeInsets.only(top: 25.0),
+        child: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          header: MaterialClassicHeader(),
+          footer: RefreshFooter(),
+          controller: _refreshController,
+          onRefresh: getPlansList,
+          onLoading: getMorePlansList,
+          child: ListView.builder(
+            itemBuilder: itemView,
+            physics: new AlwaysScrollableScrollPhysics(),
+            controller: _scrollController,
+            itemCount: _plansList.length,
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

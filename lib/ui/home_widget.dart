@@ -73,51 +73,59 @@ class HomeScreenState extends State<HomeScreen> {
         alignment: Alignment.centerLeft,
         color: Colors.transparent,
         child: Flex(
-          direction: Axis.horizontal,
+          direction: Axis.vertical,
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-              child: Image(
-                image: NetworkImage(_newsList[index].img),
-                height: 60.0,
-                width: 80.0,
-              ),
-            ),
             Expanded(
-                child: Column(
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    _newsList[index].title,
-                    softWrap: true,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontSize: 13,
-                    ),
-                  ),
-                ),
-                Flex(
+                flex: 1,
+                child: Flex(
                   direction: Axis.horizontal,
                   children: <Widget>[
-                    Spacer(
-                      flex: 1,
-                    ),
-                    Text(
-                      _newsList[index].pubDate,
-                      softWrap: true,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 3,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontSize: 10,
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                      child: Image(
+                        image: NetworkImage(_newsList[index].img),
+                        height: 60.0,
+                        width: 80.0,
                       ),
                     ),
+                    Expanded(
+                        child: Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            _newsList[index].title,
+                            softWrap: true,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                        Flex(
+                          direction: Axis.horizontal,
+                          children: <Widget>[
+                            Spacer(
+                              flex: 1,
+                            ),
+                            Text(
+                              _newsList[index].pubDate,
+                              softWrap: true,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 3,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: 10,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
                   ],
-                ),
-              ],
-            )),
+                )),
+            Divider(height: 5)
           ],
         ),
       ),
@@ -128,7 +136,9 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: SmartRefresher(
+        body: Container(
+      padding: EdgeInsets.only(top: 25.0),
+      child: SmartRefresher(
         enablePullDown: true,
         enablePullUp: true,
         header: MaterialClassicHeader(),
@@ -143,6 +153,6 @@ class HomeScreenState extends State<HomeScreen> {
           itemCount: _newsList.length,
         ),
       ),
-    );
+    ));
   }
 }

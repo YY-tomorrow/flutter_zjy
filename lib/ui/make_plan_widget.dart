@@ -14,12 +14,45 @@ class MakePlanWidgetState extends State<MakePlanWidget> {
   List<ProductsData> _productList = new List();
 
   int _page = 1;
+  String _key = "";
+  int _index = -1;
+  List<String> _productImageList = new List(11);
+
+  TextEditingController _textEditingController = new TextEditingController();
 
   /// listview 控制器
   ScrollController _scrollController = new ScrollController();
 
   RefreshController _refreshController =
       new RefreshController(initialRefresh: true);
+
+  final _icons = [
+    "assets/images/cpu.jpg",
+    "assets/images/zhuban.jpeg",
+    "assets/images/yingpan.jpg",
+    "assets/images/xianka.jpg",
+    "assets/images/dianyuan.jpg",
+    "assets/images/sanreqi.jpg",
+    "assets/images/fengshan.jpg",
+    "assets/images/xianshiqi.jpg",
+    "assets/images/jianpan.jpg",
+    "assets/images/shubiao.jpg",
+    "assets/images/jixiang.jpg"
+  ];
+
+  final _tags = [
+    "cpu",
+    "主板",
+    "硬盘",
+    "显卡",
+    "电源",
+    "散热",
+    "风扇",
+    "显示器",
+    "键盘",
+    "鼠标",
+    "机箱"
+  ];
 
   Future getProductList() async {
     _page = 1;
@@ -31,39 +64,50 @@ class MakePlanWidgetState extends State<MakePlanWidget> {
           _productList.addAll(data.data);
         });
       }
-    });
+    }, key: _key);
   }
 
   Future getMoreProductList() async {
     _page++;
     apiService.getProductList((ProductsModel data) {
       if (data.code == Constants.STATUS_SUCCESS) {
-        _refreshController.loadComplete();
         setState(() {
           _productList.addAll(data.data);
+          _refreshController.loadComplete();
         });
       }
-    }, size: 10, page: _page);
+    }, size: 10, page: _page, key: _key);
+  }
+
+  ImageProvider getImage(int index) {
+    if (_productImageList[index] != null &&
+        _productImageList[index].length > 0) {
+      return NetworkImage(_productImageList[index]);
+    }
+    return AssetImage(_icons[index]);
   }
 
   Widget itemView(BuildContext context, int index) {
+    String s = _productList[index].inOrderCount30Days == null
+        ? "0"
+        : _productList[index].inOrderCount30Days.toString();
     return Container(
-      height: 80.0,
+      height: 100.0,
       child: Flex(
         direction: Axis.horizontal,
         children: <Widget>[
           Padding(
             padding: EdgeInsets.all(10.0),
             child: Image(
-              height: 50.0,
-              width: 50.0,
+              height: 60.0,
+              width: 60.0,
               image: NetworkImage(_productList[index].materialURL),
             ),
           ),
           Expanded(
               flex: 1,
               child: Container(
-                padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
+                padding: EdgeInsets.fromLTRB(0, 10, 10, 0),
                 child: Column(
                   children: <Widget>[
                     Expanded(
@@ -72,22 +116,74 @@ class MakePlanWidgetState extends State<MakePlanWidget> {
                         _productList[index].skuName,
                         softWrap: true,
                         overflow: TextOverflow.ellipsis,
-                        maxLines: 3,
+                        maxLines: 2,
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 11.0,
                         ),
                       ),
                     ),
+                    Flex(direction: Axis.horizontal, children: <Widget>[
+                      Image(
+                        image: AssetImage("assets/images/jingdong.jpg"),
+                        height: 10.0,
+                        width: 10.0,
+                      ),
+                      Text(
+                        "￥" + _productList[index].price.toString(),
+                        style: TextStyle(fontSize: 14.0, color: Colors.red),
+                      ),
+                      Spacer(
+                        flex: 1,
+                      ),
+                      Text(
+                        "月销量：" + s,
+                        style: TextStyle(fontSize: 10.0),
+                      ),
+                    ]),
                     Flex(
                       direction: Axis.horizontal,
                       children: <Widget>[
-                        Text(
-                          _productList[index].shopName,
-                          style: TextStyle(fontSize: 10.0),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 0, 0, 3.0),
+                          child: Flex(
+                            direction: Axis.horizontal,
+                            children: <Widget>[
+                              Text(
+                                _productList[index].shopName,
+                                style: TextStyle(fontSize: 10.0),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Spacer(
+                          flex: 1,
+                        ),
+                        Container(
+                          height: 15.0,
+                          child: FlatButton(
+                            color: Colors.blue,
+                            highlightColor: Colors.blue[700],
+                            colorBrightness: Brightness.dark,
+                            splashColor: Colors.grey,
+                            child: Text(
+                              "加入配置单",
+                              style: TextStyle(fontSize: 10.0),
+                            ),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0)),
+                            onPressed: () {
+                              if (_index > -1) {
+                                _productImageList[_index] =
+                                    _productList[index].materialURL;
+                                setState(() {});
+                              }
+                            },
+                          ),
                         )
                       ],
-                    )
+                    ),
+                    Divider(height: 1),
                   ],
                 ),
               ))
@@ -107,15 +203,19 @@ class MakePlanWidgetState extends State<MakePlanWidget> {
           color: Colors.white,
           height: 35.0,
           child: TextField(
+            controller: _textEditingController,
             style: TextStyle(fontSize: 13.0),
-            textInputAction: TextInputAction.search,
-            decoration: InputDecoration(hintText: "用户名或邮箱"),
+            textInputAction: TextInputAction.none,
+            decoration: InputDecoration(hintText: "i5 9400f"),
           ),
         ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
-            onPressed: () {},
+            onPressed: () {
+              _key = _textEditingController.text;
+              getProductList();
+            },
           ),
         ],
       ),
@@ -123,23 +223,46 @@ class MakePlanWidgetState extends State<MakePlanWidget> {
         direction: Axis.horizontal,
         children: <Widget>[
           Container(
-            width: 100.0,
+            padding: EdgeInsets.only(top: 10.0),
+            width: 70.0,
             child: ListView.separated(
-              itemCount: 10,
+              itemCount: 12,
               separatorBuilder: (BuildContext context, int index) {
                 return Divider(color: Colors.blue);
               },
               itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  onTap: () {},
-                  child: Container(
-                    color: Colors.white12,
-                    padding: EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 5.0),
+                if (index == 11) {
+                  return FlatButton(
+                    color: Colors.blue,
+                    highlightColor: Colors.blue[700],
+                    colorBrightness: Brightness.dark,
+                    splashColor: Colors.grey,
                     child: Text(
-                      "关于",
-                      style: TextStyle(
-                        fontSize: 14.0,
-                      ),
+                      "完成",
+                      style: TextStyle(fontSize: 11.0),
+                    ),
+                    onPressed: () {},
+                  );
+                }
+
+                Color color = Colors.white;
+                if (index == _index) {
+                  color = Colors.white10;
+                }
+
+                return InkWell(
+                  onTap: () {
+                    _index = index;
+                    _key = _tags[index];
+                    getProductList();
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    color: color,
+                    child: Image(
+                      height: 30.0,
+                      width: 30.0,
+                      image: getImage(index),
                     ),
                   ),
                 );
