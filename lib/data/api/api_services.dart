@@ -82,8 +82,12 @@ class ApiService {
 
   // 获取社区交流贴
   void getOurProductList(Function callback,
-      {int size, page, fromPrice, toPrice, zy, String key, sort}) async {
-    dio.get(Apis.OUR_PLANS_LIST, queryParameters: {
+      {int id, size, page, fromPrice, toPrice, zy, String key, sort}) async {
+    var url = Apis.OUR_PLANS_LIST;
+    if (id != null && id > 0) {
+      url += "/" + id.toString();
+    }
+    dio.get(url, queryParameters: {
       "page_size": size,
       "current": page,
       "form_price": fromPrice,
@@ -92,8 +96,22 @@ class ApiService {
       "key": key,
       "sort": sort
     }).then((response) {
+      callback(ourPlansModelFromJson(new OurPlansModel(), response.data));
+    });
+  }
+
+  // 获取社区交流贴
+  void createPlan(Function callback, String title, content, tag, type,
+      List<int> sku) async {
+    dio.post(Apis.PLAN_CREATE, data: {
+      "title": title,
+      "content": content,
+      "tag": tag,
+      "type": type,
+      "sku_id": sku,
+    }).then((response) {
       callback(
-          ourPlansModelFromJson(new OurPlansModel(), response.data));
+          emptyResponseModelFromJson(new EmptyResponseModel(), response.data));
     });
   }
 }

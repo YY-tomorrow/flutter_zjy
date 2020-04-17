@@ -153,6 +153,23 @@ class MyWidgetState extends State<MyWidget> {
             ),
           ),
         ),
+        Flex(
+          direction: Axis.horizontal,
+          children: <Widget>[
+            Expanded(
+                flex: 1,
+                child: FlatButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, RouterName.my_plans);
+                    },
+                    child: Text("作品"))),
+            Expanded(
+                flex: 1, child: FlatButton(onPressed: null, child: Text("喜欢"))),
+            Expanded(
+                flex: 1, child: FlatButton(onPressed: null, child: Text("收藏"))),
+          ],
+        ),
+        Divider(height: 1),
         Expanded(
           child: Flex(
             direction: Axis.vertical,

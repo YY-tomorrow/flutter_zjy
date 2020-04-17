@@ -137,7 +137,7 @@ class HomeScreenState extends State<HomeScreen> {
     // TODO: implement build
     return Scaffold(
         body: Container(
-      padding: EdgeInsets.only(top: 25.0),
+      margin: EdgeInsets.only(top: 25.0),
       child: SmartRefresher(
         enablePullDown: true,
         enablePullUp: true,

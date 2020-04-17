@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: "组机营",
       debugShowCheckedModeBanner: false, //去掉debug图标
-      theme: new ThemeData(primaryColor: Colors.blue),
+      theme: new ThemeData(primaryColor: Colors.lightBlueAccent),
       routes: Router.generateRoute(),
       home: IndexWidget(),
     );

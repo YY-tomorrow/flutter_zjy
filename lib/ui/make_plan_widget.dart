@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_zjy/common/common.dart';
+import 'package:flutter_zjy/common/router.dart';
 import 'package:flutter_zjy/data/api/api_services.dart';
 import 'package:flutter_zjy/widgets/refresh_helper.dart';
 import 'package:flutter_zjy/data/model/products_model.dart';
@@ -16,7 +17,7 @@ class MakePlanWidgetState extends State<MakePlanWidget> {
   int _page = 1;
   String _key = "";
   int _index = -1;
-  List<String> _productImageList = new List(11);
+  List<ProductsData> _productImageList = new List(12);
 
   TextEditingController _textEditingController = new TextEditingController();
 
@@ -30,6 +31,7 @@ class MakePlanWidgetState extends State<MakePlanWidget> {
     "assets/images/cpu.jpg",
     "assets/images/zhuban.jpeg",
     "assets/images/yingpan.jpg",
+    "assets/images/neicuntiao.jpg",
     "assets/images/xianka.jpg",
     "assets/images/dianyuan.jpg",
     "assets/images/sanreqi.jpg",
@@ -44,6 +46,7 @@ class MakePlanWidgetState extends State<MakePlanWidget> {
     "cpu",
     "主板",
     "硬盘",
+    "内存条",
     "显卡",
     "电源",
     "散热",
@@ -81,8 +84,8 @@ class MakePlanWidgetState extends State<MakePlanWidget> {
 
   ImageProvider getImage(int index) {
     if (_productImageList[index] != null &&
-        _productImageList[index].length > 0) {
-      return NetworkImage(_productImageList[index]);
+        _productImageList[index].materialURL.length > 0) {
+      return NetworkImage(_productImageList[index].materialURL);
     }
     return AssetImage(_icons[index]);
   }
@@ -141,21 +144,21 @@ class MakePlanWidgetState extends State<MakePlanWidget> {
                         style: TextStyle(fontSize: 10.0),
                       ),
                     ]),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 3.0),
+                      child: Flex(
+                        direction: Axis.horizontal,
+                        children: <Widget>[
+                          Text(
+                            _productList[index].shopName,
+                            style: TextStyle(fontSize: 10.0),
+                          ),
+                        ],
+                      ),
+                    ),
                     Flex(
                       direction: Axis.horizontal,
                       children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 0, 0, 3.0),
-                          child: Flex(
-                            direction: Axis.horizontal,
-                            children: <Widget>[
-                              Text(
-                                _productList[index].shopName,
-                                style: TextStyle(fontSize: 10.0),
-                              ),
-                            ],
-                          ),
-                        ),
                         Spacer(
                           flex: 1,
                         ),
@@ -174,8 +177,7 @@ class MakePlanWidgetState extends State<MakePlanWidget> {
                                 borderRadius: BorderRadius.circular(10.0)),
                             onPressed: () {
                               if (_index > -1) {
-                                _productImageList[_index] =
-                                    _productList[index].materialURL;
+                                _productImageList[_index] = _productList[index];
                                 setState(() {});
                               }
                             },
@@ -226,12 +228,12 @@ class MakePlanWidgetState extends State<MakePlanWidget> {
             padding: EdgeInsets.only(top: 10.0),
             width: 70.0,
             child: ListView.separated(
-              itemCount: 12,
+              itemCount: 13,
               separatorBuilder: (BuildContext context, int index) {
                 return Divider(color: Colors.blue);
               },
               itemBuilder: (BuildContext context, int index) {
-                if (index == 11) {
+                if (index == 12) {
                   return FlatButton(
                     color: Colors.blue,
                     highlightColor: Colors.blue[700],
@@ -241,7 +243,10 @@ class MakePlanWidgetState extends State<MakePlanWidget> {
                       "完成",
                       style: TextStyle(fontSize: 11.0),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, RouterName.create_plan,
+                          arguments: _productImageList);
+                    },
                   );
                 }
 

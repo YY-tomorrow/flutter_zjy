@@ -1,27 +1,27 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zjy/common/common.dart';
-import 'package:flutter_zjy/common/router.dart';
 import 'package:flutter_zjy/data/api/api_services.dart';
 import 'package:flutter_zjy/data/model/our_plans_model.dart';
+import 'package:flutter_zjy/utils/sp_util.dart';
 import 'package:flutter_zjy/widgets/refresh_helper.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class PlanWidget extends StatefulWidget {
+class MyPlanWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return PlanWidgetState();
+    return MyPlanWidgetState();
   }
 }
 
-class PlanWidgetState extends State<PlanWidget> {
+class MyPlanWidgetState extends State<MyPlanWidget> {
   List<OurPlansDataPlan> _plansList = new List();
   var _page = 1;
 
+  var _userID = SPUtil.getInt(Constants.ID_KEY);
+
   /// listview 控制器
   ScrollController _scrollController = new ScrollController();
-
   RefreshController _refreshController =
       new RefreshController(initialRefresh: true);
 
@@ -35,7 +35,7 @@ class PlanWidgetState extends State<PlanWidget> {
           _refreshController.refreshCompleted(resetFooterState: true);
         });
       }
-    }, page: _page);
+    }, page: _page, id: _userID);
   }
 
   Future getMorePlansList() async {
@@ -47,7 +47,7 @@ class PlanWidgetState extends State<PlanWidget> {
           _refreshController.loadComplete();
         });
       }
-    }, page: _page);
+    }, page: _page, id: _userID);
   }
 
   Widget itemView(BuildContext context, int index) {
@@ -116,27 +116,23 @@ class PlanWidgetState extends State<PlanWidget> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.only(top: 25.0),
-        child: SmartRefresher(
-          enablePullDown: true,
-          enablePullUp: true,
-          header: MaterialClassicHeader(),
-          footer: RefreshFooter(),
-          controller: _refreshController,
-          onRefresh: getPlansList,
-          onLoading: getMorePlansList,
-          child: ListView.builder(
-            itemBuilder: itemView,
-            physics: new AlwaysScrollableScrollPhysics(),
-            controller: _scrollController,
-            itemCount: _plansList.length,
-          ),
-        ),
+      appBar: AppBar(
+        title: Text("我的配制单"),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, RouterName.make_plan),
-        child: Icon(Icons.add),
+      body: SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: true,
+        header: MaterialClassicHeader(),
+        footer: RefreshFooter(),
+        controller: _refreshController,
+        onRefresh: getPlansList,
+        onLoading: getMorePlansList,
+        child: ListView.builder(
+          itemBuilder: itemView,
+          physics: new AlwaysScrollableScrollPhysics(),
+          controller: _scrollController,
+          itemCount: _plansList.length,
+        ),
       ),
     );
   }
