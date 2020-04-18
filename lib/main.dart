@@ -45,7 +45,23 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: "组机营",
       debugShowCheckedModeBanner: false, //去掉debug图标
-      theme: new ThemeData(primaryColor: Colors.lightBlueAccent),
+      theme: new ThemeData(
+        // Define the default brightness and colors.
+
+        primaryColor: Colors.white,
+        accentColor: Colors.grey,
+
+        // Define the default font family.
+        fontFamily: 'Montserrat',
+
+        // Define the default TextTheme. Use this to specify the default
+        // text styling for headlines, titles, bodies of text, and more.
+        textTheme: TextTheme(
+          headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+          title: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+          body1: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+        ),
+      ),
       routes: Router.generateRoute(),
       home: IndexWidget(),
     );

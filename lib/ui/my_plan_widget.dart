@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zjy/common/common.dart';
 import 'package:flutter_zjy/data/api/api_services.dart';
@@ -64,13 +65,18 @@ class MyPlanWidgetState extends State<MyPlanWidget> {
               children: <Widget>[
                 Text(
                   _plansList[index].title,
-                  style: TextStyle(fontSize: 13.0),
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 13.0,
+                  ),
                 ),
                 Spacer(
                   flex: 1,
                 ),
                 Text(
-                  _plansList[index].price.toString(),
+                  (_plansList[index].price / 100).toString(),
                   style: TextStyle(fontSize: 12.0, color: Colors.deepOrange),
                 ),
               ],
@@ -79,14 +85,14 @@ class MyPlanWidgetState extends State<MyPlanWidget> {
           Expanded(
             flex: 1,
             child: ListView.builder(
-                padding: EdgeInsets.all(5.0),
+                padding: EdgeInsets.all(1.0),
                 scrollDirection: Axis.horizontal,
                 itemCount: _plansList[index].items.length,
-                itemExtent: 100.0,
+                itemExtent: 80.0,
                 itemBuilder: (BuildContext context, int i) {
                   String url = _plansList[index].items[i].skuImg != null
                       ? "https://img14.360buyimg.com/n1/" +
-                          _plansList[index].items[i].skuImg
+                      _plansList[index].items[i].skuImg
                       : "https://www.zujiying.top/demo.jpg";
                   return Image(
                     image: NetworkImage(url),
@@ -100,7 +106,7 @@ class MyPlanWidgetState extends State<MyPlanWidget> {
                 flex: 1,
               ),
               Text(
-                DateTime.fromMillisecondsSinceEpoch(_plansList[index].time)
+                DateUtil.getDateStrByMs(_plansList[index].time * 1000)
                     .toString(),
                 style: TextStyle(fontSize: 10.0),
               ),
@@ -122,7 +128,7 @@ class MyPlanWidgetState extends State<MyPlanWidget> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: true,
-        header: MaterialClassicHeader(),
+        header: WaterDropHeader(),
         footer: RefreshFooter(),
         controller: _refreshController,
         onRefresh: getPlansList,

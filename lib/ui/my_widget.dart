@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -83,76 +85,70 @@ class MyWidgetState extends State<MyWidget> {
     return Column(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 10.0),
-          constraints: BoxConstraints.tightFor(height: 200.0),
-          //卡片大小
-          decoration: BoxDecoration(
-              //背景装饰
-              gradient: RadialGradient(
-                  //背景径向渐变
-                  colors: [Colors.blue, Colors.lightBlue],
-                  center: Alignment.topLeft,
-                  radius: .9),
-              boxShadow: [
-                //卡片阴影
-                BoxShadow(
-                    color: Colors.black54,
-                    offset: Offset(2.0, 2.0),
-                    blurRadius: 4.0)
-              ]),
-          alignment: Alignment.center,
-          //卡片内文字居中
-          child: Container(
-            margin: EdgeInsets.all(16.0),
-            constraints: BoxConstraints.tightFor(height: 70.0),
-            child: Flex(
-              direction: Axis.horizontal,
-              children: <Widget>[
-                InkWell(
-                  onTap: () => _userInfo(),
-                  child: ClipOval(
-                    child: Image(
-                      image: NetworkImage(_userImg),
-                      height: 70.0,
-                      width: 70.0,
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 10.0),
+            constraints: BoxConstraints.tightFor(height: 200.0),
+            //卡片大小
+            decoration: new BoxDecoration(
+              image: new DecorationImage(
+                image: NetworkImage(_userImg),
+                fit: BoxFit.cover,
+              ),
+            ),
+            alignment: Alignment.center,
+            //卡片内文字居中
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: Container(
+                margin: EdgeInsets.all(16.0),
+                constraints: BoxConstraints.tightFor(height: 70.0),
+                child: Flex(
+                  direction: Axis.horizontal,
+                  children: <Widget>[
+                    InkWell(
+                      onTap: () => _userInfo(),
+                      child: ClipOval(
+                        child: Image(
+                          image: NetworkImage(_userImg),
+                          height: 70.0,
+                          width: 70.0,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Flex(
-                        direction: Axis.vertical,
-                        children: <Widget>[
-                          Expanded(
-                            flex: 1,
-                            child: Align(
-                              child: Row(
-                                children: <Widget>[
-                                  Text(
-                                    _userName,
-                                    style: TextStyle(
-                                        fontSize: 18.0,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Flex(
+                            direction: Axis.vertical,
+                            children: <Widget>[
+                              Expanded(
+                                flex: 1,
+                                child: Align(
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text(
+                                        _userName,
+                                        style: TextStyle(
+                                            fontSize: 18.0,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
                                   ),
+                                ),
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Text("id : " + _userID),
                                 ],
                               ),
-                            ),
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Text("id : " + _userID),
                             ],
-                          ),
-                        ],
-                      )),
+                          )),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ),
+              ),
+            )),
         Flex(
           direction: Axis.horizontal,
           children: <Widget>[

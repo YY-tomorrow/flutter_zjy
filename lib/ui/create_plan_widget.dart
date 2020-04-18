@@ -22,8 +22,23 @@ class CreatePlanWidgetState extends State<CreatePlanWidget> {
   TextEditingController _contentController = TextEditingController();
 
   Future createPlan() async {
-    var title = _titleController.toString();
-    var content = _contentController.toString();
+    var title = _titleController.text;
+    var content = _contentController.text;
+
+    if (title == "" || content == "") {
+      Fluttertoast.showToast(
+          msg: "标题和内容不能为空",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          // 消息框弹出的位置
+          timeInSecForIos: 1,
+          // 消息框持续的时间（目前的版本只有ios有效）
+          backgroundColor: Colors.black45,
+          textColor: Colors.white,
+          fontSize: 13.0);
+      return;
+    }
+
     var tag = "";
     var type = "plan";
 
@@ -138,7 +153,12 @@ class CreatePlanWidgetState extends State<CreatePlanWidget> {
       appBar: AppBar(
         title: Text("发表内容"),
         actions: <Widget>[
-          FlatButton(child: Text("完成"), onPressed: () => createPlan()),
+          FlatButton(
+              child: Text(
+                "完成",
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () => createPlan()),
         ],
       ),
       body: Container(
@@ -146,21 +166,24 @@ class CreatePlanWidgetState extends State<CreatePlanWidget> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0),
               child: TextField(
                 controller: _titleController,
                 maxLength: 20,
                 maxLines: 1,
-                decoration: InputDecoration.collapsed(hintText: "先来个标题"),
+                decoration: InputDecoration.collapsed(
+                    border: OutlineInputBorder(), hintText: "先来个标题"),
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0),
               child: TextField(
+                scrollPadding: EdgeInsets.all(5.0),
                 controller: _contentController,
                 maxLength: 300,
-                maxLines: 5,
-                decoration: InputDecoration.collapsed(hintText: "这一刻的想法....."),
+                maxLines: 8,
+                decoration: InputDecoration.collapsed(
+                    border: OutlineInputBorder(), hintText: "这一刻的想法....."),
               ),
             ),
             Divider(height: 1),

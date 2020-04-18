@@ -279,7 +279,7 @@ class MakePlanWidgetState extends State<MakePlanWidget> {
             child: SmartRefresher(
               enablePullDown: true,
               enablePullUp: true,
-              header: MaterialClassicHeader(),
+              header: WaterDropHeader(),
               footer: RefreshFooter(),
               controller: _refreshController,
               onRefresh: getProductList,

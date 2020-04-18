@@ -82,9 +82,9 @@ class ApiService {
 
   // 获取社区交流贴
   void getOurProductList(Function callback,
-      {int id, size, page, fromPrice, toPrice, zy, String key, sort}) async {
+      {int id = 0, size, page, fromPrice, toPrice, zy, String key, sort}) async {
     var url = Apis.OUR_PLANS_LIST;
-    if (id != null && id > 0) {
+    if (id > 0) {
       url += "/" + id.toString();
     }
     dio.get(url, queryParameters: {

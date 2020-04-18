@@ -136,23 +136,23 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-        body: Container(
-      margin: EdgeInsets.only(top: 25.0),
-      child: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        header: MaterialClassicHeader(),
-        footer: RefreshFooter(),
-        controller: _refreshController,
-        onRefresh: getNewsList,
-        onLoading: getMoreNewsList,
-        child: ListView.builder(
-          itemBuilder: itemView,
-          physics: new AlwaysScrollableScrollPhysics(),
-          controller: _scrollController,
-          itemCount: _newsList.length,
+        appBar: AppBar(
+          title: Text("资讯"),
         ),
-      ),
-    ));
+        body: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          header: WaterDropHeader(),
+          footer: RefreshFooter(),
+          controller: _refreshController,
+          onRefresh: getNewsList,
+          onLoading: getMoreNewsList,
+          child: ListView.builder(
+            itemBuilder: itemView,
+            physics: new AlwaysScrollableScrollPhysics(),
+            controller: _scrollController,
+            itemCount: _newsList.length,
+          ),
+        ));
   }
 }
