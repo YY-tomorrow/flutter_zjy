@@ -15,11 +15,16 @@ class WebViewWidgetState extends State<WebViewWidget> {
 
   @override
   Widget build(BuildContext context) {
-
-    _url = ModalRoute.of(context).settings.arguments;
+    _url = ModalRoute
+        .of(context)
+        .settings
+        .arguments;
     // TODO: implement build
-    return WebviewScaffold(
-      url: _url,
+    return Scaffold(
+      body: Padding(padding: EdgeInsets.only(top: 25.0),
+          child: WebviewScaffold(
+            url: _url,
+          )),
     );
   }
 }

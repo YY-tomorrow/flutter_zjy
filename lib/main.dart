@@ -44,12 +44,13 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "组机营",
-      debugShowCheckedModeBanner: false, //去掉debug图标
+      debugShowCheckedModeBanner: false,
+      //去掉debug图标
       theme: new ThemeData(
         // Define the default brightness and colors.
 
         primaryColor: Colors.white,
-        accentColor: Colors.grey,
+        accentColor: Colors.lightBlue,
 
         // Define the default font family.
         fontFamily: 'Montserrat',
